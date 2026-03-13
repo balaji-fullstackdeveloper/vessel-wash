@@ -1606,7 +1606,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import cron from 'node-cron';
 import mongoose from 'mongoose';
 
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: process.env.NODE_ENV !== 'production' });
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: false });
 
 // Set webhook for production
 if (process.env.NODE_ENV === 'production') {
