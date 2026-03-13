@@ -1,5 +1,5 @@
 // Database API functions
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://vessel-wash.onrender.com/api';
 
 let allPersons = [];
 let dutySchedule = [];

@@ -1606,7 +1606,12 @@ import TelegramBot from 'node-telegram-bot-api';
 import cron from 'node-cron';
 import mongoose from 'mongoose';
 
-const bot = new TelegramBot("8515984410:AAGSNYLml1ZgDwgtn7jK5M9MldKPtMO6Slw", { polling: true });
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: process.env.NODE_ENV !== 'production' });
+
+// Set webhook for production
+if (process.env.NODE_ENV === 'production') {
+    bot.setWebHook(`https://vessel-wash.onrender.com/telegram-webhook`);
+}
 
 const chatId = "-1003892174501";
 
