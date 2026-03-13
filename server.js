@@ -2,6 +2,7 @@ import express from 'express'
 import { MongoClient, ObjectId } from 'mongodb';
 import cors from 'cors';
 import dotenv from 'dotenv';
+const API_BASE =  'https://vessel-wash.onrender.com/api';
 
 dotenv.config()
 
@@ -1610,7 +1611,12 @@ const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: false });
 
 // Set webhook for production
 if (process.env.NODE_ENV === 'production') {
-    bot.setWebHook(`https://vessel-wash.onrender.com/telegram-webhook`);
+    const webhookUrl = `https://vessel-wash.onrender.com/telegram-webhook`;
+    bot.setWebHook(webhookUrl).then(() => {
+        console.log(`Telegram webhook set to: ${webhookUrl}`);
+    }).catch(err => {
+        console.error('Failed to set Telegram webhook:', err);
+    });
 }
 
 const chatId = "-1003892174501";
@@ -1841,10 +1847,19 @@ bot.onText(/\/week/, async (msg) => {
 
 });
 
+// Telegram webhook endpoint for production
+app.post('/telegram-webhook', (req, res) => {
+    bot.processUpdate(req.body);
+    res.sendStatus(200);
+});
+
 // Start server
 connectToMongoDB().then(() => {
     app.listen(port, () => {
-        console.log(`Server running at http://localhost:${port}`);
+        const serverUrl = process.env.NODE_ENV === 'production' 
+            ? `https://vessel-wash.onrender.com` 
+            : `http://localhost:${port}`;
+        console.log(`Server running at ${serverUrl}`);
     });
 
 
