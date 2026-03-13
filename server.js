@@ -1607,19 +1607,16 @@ import TelegramBot from 'node-telegram-bot-api';
 import cron from 'node-cron';
 import mongoose from 'mongoose';
 
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: false });
-
-// Set webhook for production
-if (process.env.NODE_ENV === 'production') {
-    const webhookUrl = `https://vessel-wash.onrender.com/telegram-webhook`;
-    bot.setWebHook(webhookUrl).then(() => {
-        console.log(`Telegram webhook set to: ${webhookUrl}`);
-    }).catch(err => {
-        console.error('Failed to set Telegram webhook:', err);
-    });
-}
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 
 const chatId = "-1003892174501";
+
+// Test bot connection on startup
+bot.getMe().then(botInfo => {
+  console.log('Bot connected successfully:', botInfo.username);
+}).catch(err => {
+  console.error('Failed to connect to bot:', err);
+});
 
 async function checkSchedule() {
 
@@ -1664,13 +1661,17 @@ cron.schedule("33 16 * * *", async () => {
     const person = schedule.morning;
     console.log(`Sending morning reminder to: ${person}`);
 
-    await bot.sendMessage(chatId,
-      `🌅 Vessel Cleaning Reminder
+    try {
+      const result = await bot.sendMessage(chatId,
+        `🌅 Vessel Cleaning Reminder
 
 Morning Duty: ${person}
 Time: 9:00 AM`);
-    
-    console.log('Morning reminder sent successfully');
+      console.log('Morning reminder sent successfully:', result.message_id);
+    } catch (telegramError) {
+      console.error('Telegram API error:', telegramError);
+      console.error('Error details:', telegramError.response?.body || telegramError.message);
+    }
   } catch (error) {
     console.error('Error in morning reminder cron job:', error);
   }
