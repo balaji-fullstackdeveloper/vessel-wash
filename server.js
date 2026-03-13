@@ -1773,8 +1773,8 @@ Inga namma vessel cleaning duty reminder and schedule share pannuvom.
 
 Bot commands use pannalaam:
 
-/today → Inniku duty yaar nu kaamikum  
-
+/today -> Inniku duty yaar nu kaamikum  
+/week ->  week timetable kaamikum
 
 
 🙏 Please follow duty schedule and support each other.`,
