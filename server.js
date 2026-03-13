@@ -1648,7 +1648,7 @@ async function checkSchedule() {
 }
 
 
-cron.schedule("41 16 * * *", async () => {
+cron.schedule("0 9 * * *", async () => {
   console.log('Running morning reminder cron job at 4:25 PM');
   try {
     const schedule = await checkSchedule();
