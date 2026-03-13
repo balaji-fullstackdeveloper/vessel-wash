@@ -1646,7 +1646,7 @@ async function checkSchedule() {
 }
 
 
-cron.schedule("19 16 * * *", async () => {
+cron.schedule("25 16 * * *", async () => {
 
  const schedule = await checkSchedule();
 
