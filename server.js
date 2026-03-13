@@ -1624,6 +1624,7 @@ const chatId = "-1003892174501";
 async function checkSchedule() {
 
  const today = new Date().toISOString().split("T")[0];
+ console.log(`Checking schedule for today: ${today}`);
 
  if (!schedulesCollection) {
    console.log('Schedules collection not available in checkSchedule');
@@ -1639,60 +1640,97 @@ async function checkSchedule() {
 
  const todaySchedule = data.schedule.find(s => s.date === today);
 
- if (!todaySchedule) return;
+ if (!todaySchedule) {
+   console.log(`No schedule found for date: ${today}`);
+   return null;
+ }
 
+ console.log(`Found today's schedule:`, todaySchedule);
  return todaySchedule;
 
 }
 
 
-cron.schedule("25 16 * * *", async () => {
+cron.schedule("33 16 * * *", async () => {
+  console.log('Running morning reminder cron job at 4:25 PM');
+  try {
+    const schedule = await checkSchedule();
 
- const schedule = await checkSchedule();
+    if (!schedule) {
+      console.log('No schedule found for morning reminder');
+      return;
+    }
 
- if (!schedule) return;
+    const person = schedule.morning;
+    console.log(`Sending morning reminder to: ${person}`);
 
- const person = schedule.morning;
-
- bot.sendMessage(chatId,
- `🌅 Vessel Cleaning Reminder
+    await bot.sendMessage(chatId,
+      `🌅 Vessel Cleaning Reminder
 
 Morning Duty: ${person}
 Time: 9:00 AM`);
-
+    
+    console.log('Morning reminder sent successfully');
+  } catch (error) {
+    console.error('Error in morning reminder cron job:', error);
+  }
 });
 
 cron.schedule("0 14 * * *", async () => {
+  console.log('Running afternoon reminder cron job at 2:00 PM');
+  try {
+    const schedule = await checkSchedule();
 
- const schedule = await checkSchedule();
+    if (!schedule) {
+      console.log('No schedule found for afternoon reminder');
+      return;
+    }
 
- if (!schedule) return;
+    const person = schedule.afternoon;
+    console.log(`Sending afternoon reminder to: ${person}`);
 
- const person = schedule.afternoon;
-
- bot.sendMessage(chatId,
- `🌤 Vessel Cleaning Reminder
+    await bot.sendMessage(chatId,
+      `🌤 Vessel Cleaning Reminder
 
 Afternoon Duty: ${person}
 Time: 2:00 PM`);
-
+    
+    console.log('Afternoon reminder sent successfully');
+  } catch (error) {
+    console.error('Error in afternoon reminder cron job:', error);
+  }
 });
 
 cron.schedule("0 21 * * *", async () => {
+  console.log('Running night reminder cron job at 9:00 PM');
+  try {
+    const schedule = await checkSchedule();
 
- const schedule = await checkSchedule();
+    if (!schedule) {
+      console.log('No schedule found for night reminder');
+      return;
+    }
 
- if (!schedule) return;
+    const person = schedule.night;
+    console.log(`Sending night reminder to: ${person}`);
 
- const person = schedule.night;
-
- bot.sendMessage(chatId,
- `🌙 Vessel Cleaning Reminder
+    await bot.sendMessage(chatId,
+      `🌙 Vessel Cleaning Reminder
 
 Night Duty: ${person}
 Time: 9:00 PM`);
-
+    
+    console.log('Night reminder sent successfully');
+  } catch (error) {
+    console.error('Error in night reminder cron job:', error);
+  }
 });
+
+// Log that cron jobs are scheduled
+console.log('Cron jobs scheduled:');
+console.log('- Morning reminder: 4:25 PM (16:25)');
+console.log('- Afternoon reminder: 2:00 PM (14:00)'); 
+console.log('- Night reminder: 9:00 PM (21:00)');
 
 bot.onText(/\/today/, async(msg) => {
    const chatId= "-1003892174501";
